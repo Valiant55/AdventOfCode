@@ -13,7 +13,7 @@ public class Day08Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(6);
     }
 
     [Fact]
