@@ -1,6 +1,6 @@
 ﻿using AdventOfCode23.Core.Common;
 
-namespace AdventOfCode23.Core.Day08;
+namespace AdventOfCode23.Core.Day09;
 
 public class Solution : ISolution
 {
