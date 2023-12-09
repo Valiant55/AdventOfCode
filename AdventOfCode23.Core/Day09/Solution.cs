@@ -13,12 +13,13 @@ public class Solution : ISolution
 
     public override long Part01()
     {
-        var results = Readings.Select(r => r.PredicatedReadings().Last());
+        var results = Readings.Select(r => r.PredicatedNextReadings().Last());
         return results.Sum();
     }
 
     public override long Part02()
     {
-        return 0;
+        var results = Readings.Select(r => r.PredicatedPreviousReadings().Last());
+        return results.Sum();
     }
 }
