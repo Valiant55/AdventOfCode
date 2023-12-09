@@ -6,7 +6,7 @@ namespace AdventOfCode23.Core.Day08;
 
 public class Parser : IParser<Map>
 {
-    private readonly Regex regex = new Regex(@"[A-Z]+", RegexOptions.Compiled);
+    private readonly Regex regex = new Regex(@"[0-9A-Z]+", RegexOptions.Compiled);
 
     public Map Parse(string inputFile)
     {

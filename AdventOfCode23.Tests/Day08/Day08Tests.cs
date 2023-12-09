@@ -20,10 +20,10 @@ public class Day08Tests
     public void Part02_ReturnsExpectedValue_FromExamples()
     {
         var parser = new Parser();
-        var solution = new Solution(parser);
+        var solution = new Solution(parser, @"Day08\input02.txt");
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(6);
     }
 }
