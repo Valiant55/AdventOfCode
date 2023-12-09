@@ -72,4 +72,16 @@ public static class Primes
 
         return result;
     }
+
+    public static long LeastCommonMultiple(List<int> values)
+    {
+        var factors = values
+            .Select(i => PrimeFactors(i))
+            .Select(f => f.GroupBy(i => i).Select(g => new { Factor = g.Key, Value = g.Count() * g.Key }))
+            .SelectMany(a => a)
+            .GroupBy(a => a.Factor)
+            .Select(g => (long)g.Select(g => g.Value).Max());
+
+        return factors.Aggregate((a, x) => a * x);
+    }
 }
