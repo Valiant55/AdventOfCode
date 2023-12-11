@@ -7,16 +7,33 @@ public class Race
 
     public long PossibleWins()
     {
-        long totalWins = 0;
+        long firstWin = 0;
+        long lastWin = 0;
 
         for(long holdTime = 1; holdTime < Time; holdTime++)
         {
             long remainingTime = Time - holdTime;
             long distanceTraveled = holdTime * remainingTime;
 
-            if(distanceTraveled > Distance) totalWins++;
+            if(distanceTraveled > Distance)
+            {
+                firstWin = holdTime;
+                break;
+            }
         }
 
-        return totalWins;
+        for (long holdTime = Time; holdTime >= firstWin; holdTime--)
+        {
+            long remainingTime = Time - holdTime;
+            long distanceTraveled = holdTime * remainingTime;
+
+            if (distanceTraveled > Distance)
+            {
+                lastWin = holdTime;
+                break;
+            }
+        }
+
+        return lastWin - firstWin + 1;
     }
 }
