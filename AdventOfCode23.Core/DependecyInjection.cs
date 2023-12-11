@@ -15,6 +15,10 @@ public static class DependecyInjection
 {
     public static IServiceCollection AddCoreServices(this IServiceCollection services)
     {
+        /* Day01 */
+        services.AddTransient<IParser<List<string>>, Day01.Parser>();
+        services.AddTransient<ISolution, Day01.Solution>();
+
         /* Day03 */
         services.AddTransient<IParser<IEnumerable<PartNo>>, Day03.PartNoParser>();
         services.AddTransient<IParser<IEnumerable<Position>>, Day03.GearParser>();
@@ -51,8 +55,8 @@ public static class DependecyInjection
         services.AddTransient<ISolution, Day10.Solution>();
 
         /* Day11 */
-        services.AddTransient<IParser<List<string>>, Day11.Parser>();
-        services.AddTransient<ISolution, Day11.Solution>();
+        //services.AddTransient<IParser<List<string>>, Day11.Parser>();
+        //services.AddTransient<ISolution, Day11.Solution>();
 
         return services;
     }
