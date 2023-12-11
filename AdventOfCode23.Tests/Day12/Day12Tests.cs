@@ -1,7 +1,7 @@
-﻿using AdventOfCode23.Core.Day11;
+﻿using AdventOfCode23.Core.Day12;
 using FluentAssertions;
 
-namespace AdventOfCode23.Tests.Day11;
+namespace AdventOfCode23.Tests.Day12;
 
 public class Day12Tests
 {
