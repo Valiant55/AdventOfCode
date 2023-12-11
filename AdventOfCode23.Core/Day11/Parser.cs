@@ -12,14 +12,10 @@ public class Parser : IParser<Universe>
 
         foreach((var line, var i) in File.ReadLines(inputFile).Select((l, i) => (l, i)))
         {
-            List<char> currentRow = new();
-            foreach(char c in line)
-            {
-                currentRow.Add(c);
-            }
+            List<char> currentRow = [.. line];
             obs.Add(currentRow);
         }
 
-        return new Universe() { Observations = obs.Select(a => a.ToArray()).ToArray()};
+        return new Universe(obs.Select(a => a.ToArray()).ToArray());
     }
 }

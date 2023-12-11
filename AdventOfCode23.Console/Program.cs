@@ -14,4 +14,3 @@ foreach (var solution in solutions)
 {
     Console.WriteLine(solution.ToString());
 }
-

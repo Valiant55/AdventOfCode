@@ -8,30 +8,32 @@ namespace AdventOfCode23.Core.Day11;
 public class Universe
 {
     public char[][] Observations { get; set; }
+    public List<Position> Galaxies { get; private set; } = new();
+    public List<int> HorizontalExpansions { get; private set; } = new();
+    public List<int> VerticalExpansions { get; private set; } = new();
 
-    public char[][] ExpandedObservations { get; set; }
-
-    public List<Position> Galaxies { get; set; } = new List<Position>();
-
-    public void ExpandUniverse()
+    public Universe(char[][] observations)
     {
-        List<List<char>> expansion = new();
-        List<int> verticalExpansion = new();
+        Observations = observations;
+        FindExpansions();
+        FindGalaxies();
+    }
 
+    public void FindExpansions()
+    {
         for (int row = 0; row < Observations.Length; row++)
         {
-            expansion.Add(Observations[row].ToList());
-            if(Observations[row].All(c => c == '.'))
+            if (Observations[row].All(c => c == '.'))
             {
-                expansion.Add(Observations[row].ToList());
+                HorizontalExpansions.Add(row);
             }
         }
 
-        for(int col = 0; col < expansion[0].Count; col++)
+        for (int col = 0; col < Observations[0].Length; col++)
         {
             List<char> newRow = new();
             bool allEmpty = true;
-            foreach(var row in expansion)
+            foreach(var row in Observations)
             {
                 if (row[col] == '#')
                 {
@@ -42,52 +44,51 @@ public class Universe
 
             if(allEmpty)
             {
-                verticalExpansion.Add(col);
+                VerticalExpansions.Add(col);
             }
         }
 
-        verticalExpansion.Reverse();
-        foreach (var i in verticalExpansion)
-        {
-            foreach(var row in expansion)
-            {
-                row.Insert(i, '.');
-            }
-        }
-
-        ExpandedObservations = expansion.Select(a => a.ToArray()).ToArray();
     }
 
     public void FindGalaxies()
     {
-        for(int y = 0; y < ExpandedObservations.Length; y++)
+        for(int y = 0; y < Observations.Length; y++)
         {
-            for(int x = 0; x < ExpandedObservations[0].Length; x++)
+            for(int x = 0; x < Observations[0].Length; x++)
             {
-                if (ExpandedObservations[y][x] == '#') Galaxies.Add(new Position(x+1, y+1));
+                if (Observations[y][x] == '#') Galaxies.Add(new Position(x, y));
             }
         }
     }
 
-    public long FindDistances()
-    {
-        ExpandUniverse();
-        FindGalaxies();
-
-        Console.WriteLine(Universe.Print(ExpandedObservations));
-
-        long totalDistance = 0;
+    public long FindDistances(long fillFactor = 1)
+    { 
+        List<long> totalDistance = new();
 
         foreach((var g1, var i) in Galaxies.Select((g, i) => (g, i+1)))
         {
             foreach(var g2 in Galaxies.Skip(i))
             {
-                long distance = Math.Abs(g2.X - g1.X) + Math.Abs(g2.Y - g1.Y);
-                totalDistance += distance;
+                long minX = Math.Min(g2.X, g1.X);
+                long maxX = Math.Max(g2.X, g1.X);
+                long minY = Math.Min(g2.Y, g1.Y);
+                long maxY = Math.Max(g2.Y, g1.Y);
+
+                long vert = VerticalExpansions
+                    .Where(p => p > minX && p < maxX)
+                    .Count();
+
+                long horiz = HorizontalExpansions
+                    .Where(p => p > minY && p < maxY)
+                    .Count();
+
+                long distance = (maxX - minX + (vert * fillFactor)) + (maxY - minY + (horiz * fillFactor));
+
+                totalDistance.Add(distance);
             }
         }
 
-        return totalDistance;
+        return totalDistance.Sum();
     }
 
     public static string Print<T>(T[][] array)
