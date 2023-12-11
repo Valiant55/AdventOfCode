@@ -2,10 +2,29 @@
 
 namespace AdventOfCode23.Core.Day10;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<PipeMap>
 {
-    public List<string> Parse(string inputFile)
+    public PipeMap Parse(string inputFile)
     {
-        return new List<string>();
+        List<List<Pipe>> pipes = new List<List<Pipe>>();
+        Position starting = new Position(0,0);
+
+        foreach(string line in File.ReadLines(inputFile))
+        {
+            List<Pipe> nextLine = new List<Pipe>();
+            foreach(char c in line)
+            { 
+                if(c == 'S')
+                {
+                    starting = new Position(nextLine.Count, pipes.Count);
+                }
+                nextLine.Add(new Pipe(c));
+            }
+
+            pipes.Add(nextLine);
+        }
+
+        return new PipeMap() { Pipes = pipes.To2dArray<Pipe>(), StartingPosition = starting};
     }
+
 }
