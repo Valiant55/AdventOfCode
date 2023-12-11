@@ -3,7 +3,7 @@ using FluentAssertions;
 
 namespace AdventOfCode23.Tests.Day11;
 
-public class Day12Tests
+public class Day11Tests
 {
     [Fact]
     public void Part01_ReturnsExpectedValue_FromExamples()
@@ -13,7 +13,7 @@ public class Day12Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(374);
     }
 
     [Fact]
