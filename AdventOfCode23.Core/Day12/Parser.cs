@@ -12,12 +12,9 @@ public class Parser : IParser<List<SpringReading>>
         {
             string[] parts = line.Split(' ');
 
-            string foldedReading = string.Join("?",Enumerable.Repeat(parts[0], 5));
-            string foldedConditions = string.Join(",", Enumerable.Repeat(parts[1], 5));
-
             SpringReading reading = new SpringReading(
-                foldedReading,
-                foldedConditions.Split(',').Select(r => int.Parse(r)).ToList()
+                parts[0],
+                parts[1].Split(',').Select(r => int.Parse(r)).ToList()
             );
 
             readings.Add(reading);
