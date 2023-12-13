@@ -134,4 +134,10 @@ public class SpringReading
         return true;
     }
 
+    public long CountFoldedArrangements()
+    {
+        long count = 0;
+        return count;
+    }
+
 }
