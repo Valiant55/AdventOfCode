@@ -57,6 +57,6 @@ public class Day13Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(400);
     }
 }
