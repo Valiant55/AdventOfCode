@@ -70,6 +70,10 @@ public static class DependecyInjection
         services.AddTransient<IParser<List<LavaMap>>, Day13.Parser>();
         services.AddTransient<ISolution, Day13.Solution>();
 
+        /* Day14 */
+        services.AddTransient<IParser<List<string>>, Day14.Parser>();
+        services.AddTransient<ISolution, Day14.Solution>();
+
         return services;
     }
 }

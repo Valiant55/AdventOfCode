@@ -9,7 +9,7 @@ public class Day12Tests
     public void Part01_ReturnsExpectedValue_FromExamples()
     {
         var parser = new Parser();
-        var solution = new Solution(parser);
+        var solution = new Solution(parser, parser);
 
         var answer = solution.Part01();
 
@@ -47,7 +47,7 @@ public class Day12Tests
     public void Part02_ReturnsExpectedValue_FromExamples()
     {
         var parser = new Parser();
-        var solution = new Solution(parser);
+        var solution = new Solution(parser, parser);
 
         var answer = solution.Part02();
 
