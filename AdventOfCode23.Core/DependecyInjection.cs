@@ -62,7 +62,8 @@ public static class DependecyInjection
         services.AddTransient<ISolution, Day11.Solution>();
 
         /* Day12 */
-        services.AddTransient<IParser<List<SpringReading>>, Day12.Parser>();
+        services.AddKeyedTransient<IParser<List<SpringReading>>, Day12.Parser>("day12_part01");
+        services.AddKeyedTransient<IParser<List<SpringReading>>, Day12.Parser5x>("day12_part02");
         services.AddTransient<ISolution, Day12.Solution>();
 
         /* Day13 */

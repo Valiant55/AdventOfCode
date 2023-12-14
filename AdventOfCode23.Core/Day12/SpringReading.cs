@@ -1,5 +1,7 @@
 ﻿using AdventOfCode23.Core.Common;
+using AdventOfCode23.Core.Day09;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -23,7 +25,7 @@ public class SpringReading
     public int KnownDamagedSprings => SpringConditions.Where(r => r == Condition.DAMAGED).Count();
     public int TotalDamagedSprings => DamagedGroups.Sum();
 
-    private static readonly Regex regex = new Regex(@"\.+", RegexOptions.Compiled);
+    private static readonly Regex regex = new Regex(@"\#+", RegexOptions.Compiled);
 
     private static readonly Dictionary<char, Condition> conditionMap = new()
     {
@@ -38,6 +40,14 @@ public class SpringReading
         { Condition.OPERATIONAL, '.'},
         { Condition.UNKNOWN,     '?'},
     };
+
+    public static Dictionary<string, long> Cache = new()
+    {
+
+    };
+
+    public static long CacheHit = 0;
+    public static long CacheMiss = 0;
 
     public SpringReading(string reading, List<int> groups)
     {
@@ -134,10 +144,85 @@ public class SpringReading
         return true;
     }
 
-    public long CountFoldedArrangements()
+    public long CountArrangementsCached()
     {
-        long count = 0;
+        string key = $"{Reading.Length} {string.Join(",", DamagedGroups)}";
+
+        for(int i = 1; i <= Reading.Length; i++)
+        {
+            string input = Reading.Substring(0, i);
+            List<string> strings = GenerateStrings(input);
+            List<(string, int)> patterns = strings
+                .Select(s => ReadingToDamagedGroups(s))
+                .Select(s => string.Join(",", s))
+                .GroupBy(s => s)
+                .Select(g => (g.Key, g.Count()))
+                .ToList();
+
+            foreach(var pattern in patterns)
+            {
+                Cache.TryAdd($"{input} | {pattern.Item1}", pattern.Item2);
+            }
+        }
+
+        return Cache.GetValueOrDefault(key);
+    }
+
+    private List<string> GenerateStrings(string reading)
+    {
+        if(reading == "?") return new List<string>() { "#", "." };
+        if(reading.Length == 1) return new List<string>() { reading };
+
+        IEnumerable<string> result = new List<string>();
+        var markLoc = reading.IndexOf("?");
+
+        if(markLoc != -1)
+        {
+            result = result.Concat(GenerateStrings(reading.Remove(markLoc, 1).Insert(markLoc, "#")));
+            result = result.Concat(GenerateStrings(reading.Remove(markLoc, 1).Insert(markLoc, ".")));
+        }
+        else
+        {
+            result = result.Append(reading);
+        }
+
+        return result.ToList();
+    }
+
+    private long CountArrangementsCached(string reading)
+    {
+        if (reading == "#" || reading == "?") return 1;
+        if (reading == "." || reading == string.Empty) return 0;
+
+        string key = $"{reading.Length} {string.Join(",", ReadingToDamagedGroups(reading))}";
+
+        if (Cache.TryGetValue(key, out var count))
+        {
+            CacheHit++;
+            return count;
+        }
+        CacheMiss++;
+
+        string chop = reading.Substring(0, reading.Length - 1);
+        if (reading.EndsWith("?"))
+        {
+            count += CountArrangementsCached($"{chop}#");
+            count += CountArrangementsCached($"{chop}.");
+        }
+        else
+        {
+            count += CountArrangementsCached($"{chop}");
+        }
+
+        Cache.TryAdd(key, count);
+
         return count;
     }
 
+    private List<int> ReadingToDamagedGroups(string reading)
+    {
+        var matches = regex.Matches(reading);
+        
+        return matches.Select(m => m.Value.Length).ToList();
+    }
 }
