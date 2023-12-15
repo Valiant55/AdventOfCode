@@ -46,7 +46,7 @@ public class Day12Tests
     [Fact]
     public void Part02_ReturnsExpectedValue_FromExamples()
     {
-        var parser = new Parser();
+        var parser = new Parser5x();
         var solution = new Solution(parser, parser);
 
         var answer = solution.Part02();

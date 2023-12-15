@@ -2,17 +2,17 @@
 
 namespace AdventOfCode23.Core.Day12;
 
-public class Parser : IParser<List<SpringReading2>>
+public class Parser : IParser<List<SpringReading>>
 {
-    public List<SpringReading2> Parse(string inputFile)
+    public List<SpringReading> Parse(string inputFile)
     {
-        List<SpringReading2> readings = new();
+        List<SpringReading> readings = new();
 
         foreach (string line in File.ReadLines(inputFile))
         {
             string[] parts = line.Split(' ');
 
-            SpringReading2 reading = new SpringReading2(
+            SpringReading reading = new SpringReading(
                 parts[0],
                 parts[1].Split(',').Select(r => int.Parse(r)).ToList()
             );
