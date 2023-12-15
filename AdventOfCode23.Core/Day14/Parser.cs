@@ -2,10 +2,17 @@
 
 namespace AdventOfCode23.Core.Day14;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<Platform>
 {
-    public List<string> Parse(string inputFile)
+    public Platform Parse(string inputFile)
     {
-        return new List<string>();
+        List<char[]> map = new();
+
+        foreach(var line in File.ReadLines(inputFile))
+        {
+            map.Add(line.ToCharArray());
+        }
+
+        return new Platform() { Map = map.ToArray()};
     }
 }

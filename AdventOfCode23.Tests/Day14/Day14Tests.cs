@@ -13,7 +13,7 @@ public class Day14Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(136);
     }
 
     [Fact]

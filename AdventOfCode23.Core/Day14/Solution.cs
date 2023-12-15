@@ -4,14 +4,16 @@ namespace AdventOfCode23.Core.Day14;
 
 public class Solution : ISolution
 {
-    public Solution(IParser<List<string>> parser)
-    {
+    public Platform Platform { get; set; }
 
+    public Solution(IParser<Platform> parser, string inputFile = @"Day14\input.txt")
+    {
+        Platform = parser.Parse(inputFile);
     }
 
     public override long Part01()
     {
-        return 0;
+        return Platform.TiltAndCalculateLoad();
     }
 
     public override long Part02()
