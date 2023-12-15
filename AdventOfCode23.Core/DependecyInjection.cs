@@ -11,6 +11,7 @@ using AdventOfCode23.Core.Day11;
 using AdventOfCode23.Core.Day12;
 using AdventOfCode23.Core.Day13;
 using AdventOfCode23.Core.Day14;
+using AdventOfCode23.Core.Day15;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AdventOfCode23.Core;
@@ -74,6 +75,10 @@ public static class DependecyInjection
         /* Day14 */
         services.AddTransient<IParser<Platform>, Day14.Parser>();
         services.AddTransient<ISolution, Day14.Solution>();
+
+        /* Day15 */
+        services.AddTransient<IParser<List<Step>>, Day15.Parser>();
+        services.AddTransient<ISolution, Day15.Solution>();
 
         return services;
     }

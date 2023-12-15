@@ -1,9 +1,9 @@
-﻿using AdventOfCode23.Core.Day14;
+﻿using AdventOfCode23.Core.Day16;
 using FluentAssertions;
 
-namespace AdventOfCode23.Tests.Day14;
+namespace AdventOfCode23.Tests.Day16;
 
-public class Day14Tests
+public class Day16Tests
 {
     [Fact]
     public void Part01_ReturnsExpectedValue_FromExamples()
@@ -13,7 +13,7 @@ public class Day14Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(136);
+        answer.Should().Be(0);
     }
 
     [Fact]
@@ -24,6 +24,6 @@ public class Day14Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(64);
+        answer.Should().Be(0);
     }
 }

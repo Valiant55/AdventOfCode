@@ -4,18 +4,23 @@ namespace AdventOfCode23.Core.Day15;
 
 public class Solution : ISolution
 {
-    public Solution(IParser<List<string>> parser)
-    {
+    public List<Step> Steps { get; set; }
+    public BoxArray BoxArray { get; set; }
 
+    public Solution(IParser<List<Step>> parser)
+    {
+        Steps = parser.Parse(@"Day15\input.txt");
     }
 
     public override long Part01()
     {
-        return 0;
+        return Steps.Select(s => s.Value.ApplyHASH()).Sum();
     }
 
     public override long Part02()
     {
-        return 0;
+        BoxArray = new BoxArray();
+        BoxArray.BuildArray(Steps);
+        return BoxArray.CalculateFocusingPower();
     }
 }

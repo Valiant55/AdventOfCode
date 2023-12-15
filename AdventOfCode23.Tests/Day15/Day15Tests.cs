@@ -13,7 +13,7 @@ public class Day15Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(1320);
     }
 
     [Fact]
@@ -24,6 +24,6 @@ public class Day15Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(145);
     }
 }

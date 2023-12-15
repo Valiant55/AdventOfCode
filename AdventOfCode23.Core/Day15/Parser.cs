@@ -2,10 +2,13 @@
 
 namespace AdventOfCode23.Core.Day15;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<List<Step>>
 {
-    public List<string> Parse(string inputFile)
+    public List<Step> Parse(string inputFile)
     {
-        return new List<string>();
+        var file = File.ReadAllText(inputFile);
+        var steps = file.Split(",");
+
+        return steps.Select(s => new Step(s)).ToList();
     }
 }

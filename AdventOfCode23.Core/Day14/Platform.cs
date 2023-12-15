@@ -10,23 +10,37 @@ public class Platform
     {
         char[][] map = new char[Map.Length][];
         Array.Copy(Map, map, Map.Length);
-        Tilt(map, MoveNorth);
+        MoveNorth(map);
         return CalculateLoad(map);
     }
 
-    public long TiltAndCalculateLoad(int x = 1_000_000_000)
+    public long CycleAndCalculateLoad(int totalCycles = 1_000_000_000)
     {
         char[][] map = new char[Map.Length][];
         Array.Copy(Map, map, Map.Length);
-        return CalculateLoad(map);
+
+        long lastLoad = 0;
+        long currentLoad = 1;
+        int x = 0;
+
+        while(lastLoad != currentLoad)
+        {
+            lastLoad = CalculateLoad(map);
+            Cycle(map);
+            currentLoad = CalculateLoad(map);
+            x++;
+            Console.WriteLine($"Iteration: {x}");
+        }
+
+        return currentLoad;
     }
 
-    public string GetNextMap(char[][] map)
+    public void Cycle(char[][] map)
     {
-
-
-        var strMap = string.Join("", map.Select(x => new string(x)));
-        return strMap;
+        //Tilt(map, MoveNorth);
+        Tilt(map, MoveWest);
+        Tilt(map, MoveSouth);
+        Tilt(map, MoveEast);
     }
 
     public void Tilt(char[][] map, Action<char[][], int, int> action)
@@ -43,38 +57,46 @@ public class Platform
         }
     }
 
-    private void MoveNorth(char[][] map, int x, int y)
+    private void MoveNorth(char[][] map)
     {
-        int newY = y;
-        for(int i = y-1; i >= 0; i--)
+        for (int x = 0; x < map[0].Length; x++)
         {
-            if (map[i][x] == '.') newY = i;
-            else break;
-        }
+            for (int y = 0; y < map.Length; y++)
+            {
+                if (map[y][x] == 'O')
+                {
+                    int newY = y;
+                    for (int i = y - 1; i >= 0; i--)
+                    {
+                        if (map[i][x] == '.') newY = i;
+                        else break;
+                    }
 
-        if (newY == y) return;
-        map[newY][x] = 'O';
-        map[y][x] = '.';
+                    map[newY][x] = 'O';
+                    map[y][x] = '.';
+                }
+            }
+        } 
     }
 
     private void MoveWest(char[][] map, int x, int y)
     {
-        int newY = y;
-        for (int i = y - 1; i >= 0; i--)
+        int newX = x;
+        for (int i = x - 1; i >= 0; i--)
         {
-            if (map[i][x] == '.') newY = i;
+            if (map[y][i] == '.') newX = i;
             else break;
         }
 
-        if (newY == y) return;
-        map[newY][x] = 'O';
+        if (newX == x) return;
+        map[y][newX] = 'O';
         map[y][x] = '.';
     }
 
     private void MoveSouth(char[][] map, int x, int y)
     {
         int newY = y;
-        for (int i = y - 1; i >= 0; i--)
+        for (int i = y + 1; i < map.Length; i++)
         {
             if (map[i][x] == '.') newY = i;
             else break;
@@ -87,15 +109,15 @@ public class Platform
 
     private void MoveEast(char[][] map, int x, int y)
     {
-        int newY = y;
-        for (int i = y - 1; i >= 0; i--)
+        int newX = x;
+        for (int i = x + 1; i < map[0].Length; i++)
         {
-            if (map[i][x] == '.') newY = i;
+            if (map[y][i] == '.') newX = i;
             else break;
         }
 
-        if (newY == y) return;
-        map[newY][x] = 'O';
+        if (newX == x) return;
+        map[y][newX] = 'O';
         map[y][x] = '.';
     }
 

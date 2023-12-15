@@ -8,8 +8,7 @@ var serviceProvider = new ServiceCollection()
 
 var solutions = serviceProvider
     .GetServices<ISolution>()
-    .TakeLast(3)
-    .Take(1);
+    .TakeLast(1);
 
 foreach (var solution in solutions)
 {
