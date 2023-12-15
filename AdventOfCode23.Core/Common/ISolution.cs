@@ -14,7 +14,7 @@ public abstract class ISolution
         var part01 = Part01();
         stopWatch.Stop();
         var part01Time = stopWatch.Elapsed;
-
+        stopWatch.Restart();
         stopWatch.Start();
         var part02 = Part02();
         stopWatch.Stop();
