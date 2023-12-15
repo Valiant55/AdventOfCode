@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode23.Core.Common;
+﻿using System.Diagnostics;
+
+namespace AdventOfCode23.Core.Common;
 
 public abstract class ISolution
 {
@@ -7,6 +9,17 @@ public abstract class ISolution
 
     public override string ToString()
     {
-        return $"{this.GetType().Namespace}\nThe answer to part 1 is {Part01()}\nThe answer to part 2 is {Part02()}";
+        Stopwatch stopWatch = new Stopwatch();
+        stopWatch.Start();
+        var part01 = Part01();
+        stopWatch.Stop();
+        var part01Time = stopWatch.Elapsed;
+
+        stopWatch.Start();
+        var part02 = Part02();
+        stopWatch.Stop();
+        var part02Time = stopWatch.Elapsed;
+
+        return $"{this.GetType().Namespace}\nThe answer to part 1 is {part01} ({part01Time.Milliseconds}ms)\nThe answer to part 2 is {part02} ({part02Time.Milliseconds}ms)";
     }
 }

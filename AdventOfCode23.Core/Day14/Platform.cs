@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text;
 
 namespace AdventOfCode23.Core.Day14;
 
@@ -19,42 +20,20 @@ public class Platform
         char[][] map = new char[Map.Length][];
         Array.Copy(Map, map, Map.Length);
 
-        long lastLoad = 0;
-        long currentLoad = 1;
-        int x = 0;
-
-        while(lastLoad != currentLoad)
+        for(int x = 0; x < 1000; x++)
         {
-            lastLoad = CalculateLoad(map);
             Cycle(map);
-            currentLoad = CalculateLoad(map);
-            x++;
-            Console.WriteLine($"Iteration: {x}");
         }
 
-        return currentLoad;
+        return CalculateLoad(map);
     }
 
     public void Cycle(char[][] map)
     {
-        //Tilt(map, MoveNorth);
-        Tilt(map, MoveWest);
-        Tilt(map, MoveSouth);
-        Tilt(map, MoveEast);
-    }
-
-    public void Tilt(char[][] map, Action<char[][], int, int> action)
-    {
-        for(int x = 0; x < Map[0].Length; x++)
-        {
-            for(int y = 0; y < Map.Length; y++)
-            {
-                if (Map[y][x] == 'O')
-                {
-                    action(map, x, y);
-                }
-            }
-        }
+        MoveNorth(map);
+        MoveWest(map);
+        MoveSouth(map);
+        MoveEast(map);
     }
 
     private void MoveNorth(char[][] map)
@@ -72,53 +51,89 @@ public class Platform
                         else break;
                     }
 
-                    map[newY][x] = 'O';
-                    map[y][x] = '.';
+                    if(newY != y)
+                    {
+                        map[newY][x] = 'O';
+                        map[y][x] = '.';
+                    } 
                 }
             }
         } 
     }
 
-    private void MoveWest(char[][] map, int x, int y)
+    private void MoveWest(char[][] map)
     {
-        int newX = x;
-        for (int i = x - 1; i >= 0; i--)
+        for (int y = 0; y < map.Length; y++)
         {
-            if (map[y][i] == '.') newX = i;
-            else break;
-        }
+            for (int x = 0; x < map[y].Length; x++)
+            {
+                if (map[y][x] == 'O')
+                {
+                    int newX = x;
+                    for (int i = x - 1; i >= 0; i--)
+                    {
+                        if (map[y][i] == '.') newX = i;
+                        else break;
+                    }
 
-        if (newX == x) return;
-        map[y][newX] = 'O';
-        map[y][x] = '.';
+                    if (newX != x)
+                    {
+                        map[y][newX] = 'O';
+                        map[y][x] = '.';
+                    }
+                }
+            }
+        } 
     }
 
-    private void MoveSouth(char[][] map, int x, int y)
+    private void MoveSouth(char[][] map)
     {
-        int newY = y;
-        for (int i = y + 1; i < map.Length; i++)
+        for (int y = map.Length - 1; y >= 0; y--)
         {
-            if (map[i][x] == '.') newY = i;
-            else break;
-        }
+            for (int x = 0; x < map[y].Length; x++)
+            {
+                if (Map[y][x] == 'O')
+                {
+                    int newY = y;
+                    for (int i = y + 1; i < map.Length; i++)
+                    {
+                        if (map[i][x] == '.') newY = i;
+                        else break;
+                    }
 
-        if (newY == y) return;
-        map[newY][x] = 'O';
-        map[y][x] = '.';
+                    if (newY != y)
+                    {
+                        map[newY][x] = 'O';
+                        map[y][x] = '.';
+                    }
+                }
+            }
+        }  
     }
 
-    private void MoveEast(char[][] map, int x, int y)
+    private void MoveEast(char[][] map)
     {
-        int newX = x;
-        for (int i = x + 1; i < map[0].Length; i++)
+        for (int y = 0; y < Map.Length; y++)
         {
-            if (map[y][i] == '.') newX = i;
-            else break;
-        }
+            for (int x = Map[0].Length - 1; x >= 0; x--)
+            {
+                if (Map[y][x] == 'O')
+                {
+                    int newX = x;
+                    for (int i = x + 1; i < map[y].Length; i++)
+                    {
+                        if (map[y][i] == '.') newX = i;
+                        else break;
+                    }
 
-        if (newX == x) return;
-        map[y][newX] = 'O';
-        map[y][x] = '.';
+                    if (newX != x)
+                    {
+                        map[y][newX] = 'O';
+                        map[y][x] = '.';
+                    }
+                }
+            }
+        }
     }
 
     public long CalculateLoad(char[][] map)
@@ -133,5 +148,22 @@ public class Platform
         }
 
         return load;
+    }
+
+    public static string Print<T>(T[][] array)
+    {
+        var sb = new StringBuilder();
+
+        for (int row = 0; row < array.Length; row++)
+        {
+            for (int column = 0; column < array[row].Length; column++)
+            {
+                sb.Append(array[row][column].ToString());
+            }
+
+            sb.AppendLine();
+        }
+
+        return sb.ToString();
     }
 }
