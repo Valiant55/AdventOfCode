@@ -14,7 +14,6 @@ public record Vector(int X, int Y, Direction Direction);
 public class MirrorArray
 {
     public char[][] Array {  get; set; }
-    public HashSet<Vector> TraveledNodes { get; set; }
 
     private static Dictionary<(Direction, char), List<Direction>> ReflectionMap = new()
     {
@@ -35,28 +34,53 @@ public class MirrorArray
     public MirrorArray(char[][] array)
     {
         Array = array;
-        TraveledNodes = [];
     }
 
     public long CountTraveledNodes()
     {
-        FireLaser(new Vector(0, 0, Direction.EAST));
-        return TraveledNodes.Select(v => (v.X, v.Y)).Distinct().Count();
+        return FireLaser(new Vector(0, 0, Direction.EAST));
     }
 
-    public void FireLaser(Vector startingVector)
+    public long FindMaxEnergizedTiles()
     {
+        long currentMax = 0;
+        Vector startingVector;
+
+        for (int x = 0; x < Array[0].Length; x++)
+        {
+            startingVector = new Vector(x, 0, Direction.SOUTH);
+            currentMax = Math.Max(currentMax, FireLaser(startingVector));
+
+            startingVector = new Vector(x, Array.Length - 1, Direction.NORTH);
+            currentMax = Math.Max(currentMax, FireLaser(startingVector));
+        }
+
+        for (int y = 0; y < Array.Length; y++)
+        {
+            startingVector = new Vector(0, y, Direction.EAST);
+            currentMax = Math.Max(currentMax, FireLaser(startingVector));
+
+            startingVector = new Vector(Array[0].Length - 1, y, Direction.WEST);
+            currentMax = Math.Max(currentMax, FireLaser(startingVector));
+        }
+
+        return currentMax;
+    }
+
+    public long FireLaser(Vector startingVector)
+    {
+        HashSet<Vector> traveledNodes = new();
         var queue = new Queue<Vector>();
         queue.Enqueue(startingVector);
 
         while (queue.Count > 0)
         {
             var curr = queue.Dequeue();
-            if(TraveledNodes.Contains(curr))
+            if(traveledNodes.Contains(curr))
             {
                 continue;
             }
-            TraveledNodes.Add(curr);
+            traveledNodes.Add(curr);
 
             var directions = ReflectionMap
                 .GetValueOrDefault(
@@ -95,6 +119,8 @@ public class MirrorArray
                 }
             }
         }
+
+        return traveledNodes.Select(v => (v.X, v.Y)).Distinct().Count();
     }
 
 }
