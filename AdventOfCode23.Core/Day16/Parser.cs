@@ -2,10 +2,11 @@
 
 namespace AdventOfCode23.Core.Day16;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<MirrorArray>
 {
-    public List<string> Parse(string inputFile)
+    public MirrorArray Parse(string inputFile)
     {
-        return new List<string>();
+        var lines = File.ReadAllLines(inputFile);
+        return new MirrorArray(lines.Select(l => l.ToCharArray()).ToArray());
     }
 }

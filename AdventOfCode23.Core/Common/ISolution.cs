@@ -20,6 +20,8 @@ public abstract class ISolution
         stopWatch.Stop();
         var part02Time = stopWatch.Elapsed;
 
-        return $"{this.GetType().Namespace}\nThe answer to part 1 is {part01} ({part01Time.Milliseconds}ms)\nThe answer to part 2 is {part02} ({part02Time.Milliseconds}ms)";
+        var day = this.GetType().Namespace?.Split(".").Last();
+
+        return $"{day} Solution\nThe answer to part 1 is {part01} ({part01Time.Milliseconds}ms)\nThe answer to part 2 is {part02} ({part02Time.Milliseconds}ms)";
     }
 }

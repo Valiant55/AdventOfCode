@@ -4,14 +4,17 @@ namespace AdventOfCode23.Core.Day16;
 
 public class Solution : ISolution
 {
-    public Solution(IParser<List<string>> parser)
-    {
+    private readonly IParser<MirrorArray> _parser;
 
+    public Solution(IParser<MirrorArray> parser)
+    {
+        _parser = parser;
     }
 
     public override long Part01()
     {
-        return 0;
+        MirrorArray array = _parser.Parse(@"Day16\input.txt");
+        return array.CountTraveledNodes();
     }
 
     public override long Part02()

@@ -13,7 +13,7 @@ public class Day16Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(46);
     }
 
     [Fact]
