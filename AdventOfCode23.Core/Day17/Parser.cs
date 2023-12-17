@@ -2,10 +2,18 @@
 
 namespace AdventOfCode23.Core.Day17;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<GearCity>
 {
-    public List<string> Parse(string inputFile)
+    public GearCity Parse(string inputFile)
     {
-        return new List<string>();
+        var result = File.ReadAllLines(inputFile);
+        List<List<int>> grid = result
+            .Select(l => l
+                .Select(c => int.Parse(c.ToString()))
+                .ToList()
+            )
+            .ToList();
+
+        return new GearCity(grid);
     }
 }

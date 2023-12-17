@@ -3,7 +3,7 @@ using System.Text;
 
 namespace AdventOfCode23.Core.Common;
 
-public class Grid<T> where T: class
+public class Grid<T>
 {
     public T[][] GridValues { get; set; }
     public int Width => GridValues[0].Length;
@@ -23,6 +23,10 @@ public class Grid<T> where T: class
         {
             return GridValues[y][x];
         }
+        set
+        {
+            GridValues[y][x] = value;
+        }
     }
 
     public T this[Position pos]
@@ -30,6 +34,10 @@ public class Grid<T> where T: class
         get
         {
             return GridValues[pos.Y][pos.X];
+        }
+        set
+        {
+            GridValues[pos.Y][pos.X] = value;
         }
     }
 
@@ -71,7 +79,7 @@ public class Grid<T> where T: class
         {
             foreach(var c in r)
             {
-                sb.Append(c.ToString());
+                sb.Append(c.ToString() + "\t");
             }
 
             sb.AppendLine();
