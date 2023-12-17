@@ -5,7 +5,9 @@ namespace AdventOfCode23.Core.Common;
 
 public class Grid<T> where T: class
 {
-    public T[][] GridValues { get; private set; }
+    public T[][] GridValues { get; set; }
+    public int Width => GridValues[0].Length;
+    public int Height => GridValues.Length;
 
     public T[] this[int index]
     {
@@ -23,9 +25,42 @@ public class Grid<T> where T: class
         }
     }
 
+    public T this[Position pos]
+    {
+        get
+        {
+            return GridValues[pos.Y][pos.X];
+        }
+    }
+
     public Grid(List<List<T>> values)
     {
+        if(!values.Select(l => l.Count()).All(l => l == values[0].Count()))
+        {
+            throw new ArgumentException("Grids should be rectangular and not have jagged members.");
+        }
+
         GridValues = values.Select(x => x.ToArray()).ToArray();
+    }
+
+    public Grid(T[][] values)
+    {
+        if (!values.Select(l => l.Count()).All(l => l == values[0].Count()))
+        {
+            throw new ArgumentException("Grids should be rectangular and not have jagged members.");
+        }
+
+        GridValues = values;
+    }
+
+    public bool Contains(Position pos)
+    {
+        return pos.X >= 0 && pos.X < Width && pos.Y >= 0 && pos.Y < Height;
+    }
+
+    public HashSet<T> UniqueValues()
+    {
+        return GridValues.SelectMany(x => x).ToHashSet();
     }
 
     public override string ToString()
