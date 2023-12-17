@@ -85,6 +85,10 @@ public static class DependecyInjection
         services.AddTransient<IParser<MirrorArray>, Day16.Parser>();
         services.AddTransient<ISolution, Day16.Solution>();
 
+        /* Day17 */
+        services.AddTransient<IParser<List<string>>, Day17.Parser>();
+        services.AddTransient<ISolution, Day17.Solution>();
+
         return services;
     }
 }
