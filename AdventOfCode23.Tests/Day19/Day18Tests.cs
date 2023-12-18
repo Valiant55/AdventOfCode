@@ -1,9 +1,9 @@
-﻿using AdventOfCode23.Core.Day18;
+﻿using AdventOfCode23.Core.Day19;
 using FluentAssertions;
 
-namespace AdventOfCode23.Tests.Day18;
+namespace AdventOfCode23.Tests.Day19;
 
-public class Day18Tests
+public class Day19Tests
 {
     [Fact]
     public void Part01_ReturnsExpectedValue_FromExamples()
@@ -13,18 +13,7 @@ public class Day18Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(62);
-    }
-
-    [Fact]
-    public void Part01_ReturnsExpectedValue_FromMiddleOrigin()
-    {
-        var parser = new Parser();
-        var solution = new Solution(parser, @"Day18\input2.txt");
-
-        var answer = solution.Part01();
-
-        answer.Should().Be(76);
+        answer.Should().Be(0);
     }
 
     [Fact]
