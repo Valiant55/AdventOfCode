@@ -32,39 +32,37 @@ public class GearCity
 
     public long FindShortestPath()
     {
-        Grid<bool> visited = new Grid<bool>(InitVistedGrid());
-        Grid<int> shortestPath = new Grid<int>(InitShortestPath());
-        Grid<List<Direction>> incomingDireciton = new Grid<List<Direction>>(InitIncomingDirection());
+        Grid<HashSet<Direction>> visited = new Grid<HashSet<Direction>>(InitVistedGrid());
+        Position goal = new Position(CityBlocks.Width - 1, CityBlocks.Height - 1);
 
-        while (TryFindMinimum(visited, shortestPath, out var currPosition))
+        PriorityQueue<Node, double> queue = new PriorityQueue<Node, double>();
+        HashSet<Node> queuedNodes = new HashSet<Node>();
+        queue.Enqueue(new Node(new Position(0, 0), 0, Direction.NONE), 0);
+
+        long currentMin = long.MaxValue;
+
+        while (queue.Count > 0)
         {
-            List<Node> unvistedNeighbors = new();
+            Node curr = queue.Dequeue();
 
-            foreach(var dir in incomingDireciton[currPosition])
+            if (curr.Position == goal)
             {
-                var curr = new Node(currPosition, shortestPath[currPosition], dir);
-                unvistedNeighbors = unvistedNeighbors.Concat(FindConnectingNodes(curr)).ToList();
+                currentMin = Math.Min(currentMin, curr.HeatLoss);
             }
 
-            unvistedNeighbors = unvistedNeighbors
-                .Where(n => !visited[n.Position])
-                .ToList();
+            FindConnectingNodes(curr)
+                .Where(n => !visited[n.Position].Contains(n.Direction))
+                .ToList()
+                .ForEach(n =>
+                    {
+                        if(queuedNodes.Add(n)) queue.Enqueue(n, n.HeatLoss + Potential(n.Position, goal));
+                    }
+                );
 
-            foreach(var node in unvistedNeighbors)
-            {
-                if(node.HeatLoss <= shortestPath[node.Position])
-                {
-                    shortestPath[node.Position] = node.HeatLoss;
-                    incomingDireciton[node.Position].Add(node.Direction);
-                }
-            }
-
-            visited[currPosition] = true;
+            visited[curr.Position].Add(curr.Direction);
         }
 
-        Console.WriteLine(shortestPath);
-
-        return shortestPath[CityBlocks.Height - 1][CityBlocks.Width - 1];
+        return currentMin;
     }
 
     private List<Node> FindConnectingNodes(Node node)
@@ -94,66 +92,19 @@ public class GearCity
         return nodes;
     }
 
-    private bool[][] InitVistedGrid()
+    private HashSet<Direction>[][] InitVistedGrid()
     {
-        bool[][] visited = new bool[CityBlocks.Height][];
+        HashSet<Direction>[][] visited = new HashSet<Direction>[CityBlocks.Height][];
         for(int y = 0; y < CityBlocks.Height; y++)
         {
-            visited[y] = Enumerable.Repeat(false, CityBlocks.Width).ToArray();
+            visited[y] = new HashSet<Direction>[CityBlocks.Width];
+            for(int x = 0; x < CityBlocks.Width; x++)
+            {
+                visited[y][x] = new HashSet<Direction>();
+            }
         }
 
         return visited;
-    }
-
-    private int[][] InitShortestPath()
-    {
-        int[][] shortest = new int[CityBlocks.Height][];
-        for (int y = 0; y < CityBlocks.Height; y++)
-        {
-            shortest[y] = Enumerable.Repeat(int.MaxValue, CityBlocks.Width).ToArray();
-        }
-
-        shortest[0][0] = 0;
-
-        return shortest;
-    }
-
-    private List<Direction>[][] InitIncomingDirection()
-    {
-        List<Direction>[][] direcitons = new List<Direction>[CityBlocks.Height][];
-        for (int y = 0; y < CityBlocks.Height; y++)
-        {
-            direcitons[y] = new List<Direction>[CityBlocks.Width];
-            for(int x = 0; x < CityBlocks.Width; x++)
-            {
-                direcitons[y][x] = new List<Direction>();
-            }
-        }
-
-        direcitons[0][0].Add(Direction.NONE);
-
-        return direcitons;
-    }
-
-    private bool TryFindMinimum(Grid<bool> visited, Grid<int> shortestPath, out Position position)
-    {
-        Position pos = null;
-        int currentMax = int.MaxValue;
-
-        for (int y = 0; y < CityBlocks.Height; y++)
-        {
-            for (int x = 0; x < CityBlocks.Width; x++)
-            {
-                if (!visited[y][x] && shortestPath[y][x] < currentMax)
-                {
-                    pos = new Position(x, y);
-                    currentMax = shortestPath[y][x];
-                }
-            }
-        }
-
-        position = pos;
-        return pos is not null;
     }
 
     private Position Nudge(Position pos, Direction dir)
@@ -169,5 +120,10 @@ public class GearCity
             default:
                 return new Position(pos.X - 1, pos.Y);
         }
+    }
+
+    private double Potential(Position current, Position goal)
+    {
+        return Math.Sqrt(Math.Pow(current.X - goal.X, 2) + Math.Pow(current.Y - goal.Y, 2));
     }
 }

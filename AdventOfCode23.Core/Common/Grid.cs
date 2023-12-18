@@ -79,7 +79,7 @@ public class Grid<T>
         {
             foreach(var c in r)
             {
-                sb.Append(c.ToString() + "\t");
+                sb.Append(c.ToString());
             }
 
             sb.AppendLine();
