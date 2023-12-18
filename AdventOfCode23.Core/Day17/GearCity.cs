@@ -32,6 +32,16 @@ public class GearCity
 
     public long FindShortestPath()
     {
+        return FindShortestPath(FindNeighbors);
+    }
+
+    public long FindShortestPathUltra()
+    {
+        return FindShortestPath(FindUltraNeighbors);
+    }
+
+    private long FindShortestPath(Func<Node, List<Node>> findNeighbors)
+    {
         Grid<HashSet<Direction>> visited = new Grid<HashSet<Direction>>(InitVistedGrid());
         Position goal = new Position(CityBlocks.Width - 1, CityBlocks.Height - 1);
 
@@ -50,7 +60,7 @@ public class GearCity
                 currentMin = Math.Min(currentMin, curr.HeatLoss);
             }
 
-            FindConnectingNodes(curr)
+            findNeighbors(curr)
                 .Where(n => !visited[n.Position].Contains(n.Direction))
                 .ToList()
                 .ForEach(n =>
@@ -65,7 +75,7 @@ public class GearCity
         return currentMin;
     }
 
-    private List<Node> FindConnectingNodes(Node node)
+    private List<Node> FindNeighbors(Node node)
     {
         List<Node> nodes = new List<Node>();
 
@@ -77,6 +87,38 @@ public class GearCity
             {
                 newPos = Nudge(newPos, dir);
                 if (CityBlocks.Contains(newPos))
+                {
+                    heat += CityBlocks[newPos];
+                    Node newNode = new Node(newPos, heat, dir);
+                    nodes.Add(newNode);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        return nodes;
+    }
+
+    private List<Node> FindUltraNeighbors(Node node)
+    {
+        List<Node> nodes = new List<Node>();
+
+        foreach (var dir in ValidDirections[node.Direction])
+        {
+            var newPos = node.Position;
+            var heat = node.HeatLoss;
+            for (int i = 0; i < 10; i++)
+            {
+                newPos = Nudge(newPos, dir);
+
+                if (CityBlocks.Contains(newPos) && i < 3)
+                {
+                    heat += CityBlocks[newPos];
+                }
+                else if (CityBlocks.Contains(newPos))
                 {
                     heat += CityBlocks[newPos];
                     Node newNode = new Node(newPos, heat, dir);

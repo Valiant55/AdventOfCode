@@ -24,6 +24,17 @@ public class Day17Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(94);
+    }
+
+    [Fact]
+    public void Part02_ReturnsExpectedValue_FromSecondExamples()
+    {
+        var parser = new Parser();
+        var solution = new Solution(parser, @"Day17\input2.txt");
+
+        var answer = solution.Part02();
+
+        answer.Should().Be(71);
     }
 }
