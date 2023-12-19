@@ -7,7 +7,7 @@ public class DigInstruction
     public char Direction { get; set; }
     public int Distance { get; set; }
     public string Color { get; set; }
-    public long TrueDistance { get; set; }
+    public int TrueDistance { get; set; }
     public char TrueDirection { get; set; }
 
     public DigInstruction(char direction, int distance, string color)
@@ -15,8 +15,10 @@ public class DigInstruction
         Direction = direction;
         Distance = distance;
         Color = color;
+        TrueDistance = distance;
+        TrueDirection = direction;
 
-        TrueDirection = Color[0] switch
+        TrueDirection = Color[5] switch
         {
             '0' => 'R',
             '1' => 'D',
@@ -25,19 +27,81 @@ public class DigInstruction
              _  => 'F'
         };
 
-        TrueDistance = Convert.ToInt64(color[..5], 16);
+        TrueDistance = Convert.ToInt32(color[..5], 16);
     }
 }
 
 public class LavaLagoon
 {
     public List<DigInstruction> DigPlan { get; set; }
-    public Grid<char> Lagoon { get; set; }
 
     public LavaLagoon(List<DigInstruction> digPlan)
     {
         DigPlan = digPlan;
+    }
 
+    public long CountPitArea()
+    {
+        Grid<char> lagoon = BuildPit(DigPlan);
+        FillPit(lagoon);
+
+        long area = 0;
+
+        for (int x = 0; x < lagoon.Width; x++)
+        {
+            for (int y = 0; y < lagoon.Height; y++)
+            {
+                if (lagoon[y][x] == '#') area++;
+            }
+        }
+
+        return area;
+    }
+
+    public long CountCorrectedPitArea()
+    {
+        (long X, long Y) currentLocation = new(0, 0);
+        List<(long X, long Y)> verticies = [currentLocation];
+        long boarder = 0;
+
+        foreach (var i in DigPlan)
+        {
+            switch (i.TrueDirection)
+            {
+                case 'U':
+                    currentLocation.Y -= i.TrueDistance;
+                    break;
+                case 'D':
+                    currentLocation.Y += i.TrueDistance;
+                    break;
+                case 'L':
+                    currentLocation.X -= i.TrueDistance;
+                    break;
+                case 'R':
+                    currentLocation.X += i.TrueDistance;
+                    break;
+            }
+            boarder += i.TrueDistance;
+            verticies.Add(currentLocation);
+        }
+        verticies = verticies.SkipLast(1).ToList();
+
+        long area = 0;
+        currentLocation = verticies[0];
+        foreach (var vertex in verticies.Skip(1))
+        {
+            area += (currentLocation.X * vertex.Y) - (currentLocation.Y * vertex.X);
+            currentLocation = vertex;
+        }
+
+        area += (verticies[0].X * verticies.Last().Y) - (verticies[0].Y * verticies.Last().X);
+        area = Math.Abs(area);
+
+        return ((area + boarder) / 2) + 1;
+    }
+
+    private Grid<char> BuildPit(List<DigInstruction> digPlan)
+    {
         int originXOffset = 0;
         int originYOffset = 0;
 
@@ -46,7 +110,7 @@ public class LavaLagoon
         int maxXOffset = 0;
         int maxYOffset = 0;
 
-        foreach (var i in DigPlan)
+        foreach (var i in digPlan)
         {
             switch (i.Direction)
             {
@@ -83,13 +147,13 @@ public class LavaLagoon
             lagoon[y] = Enumerable.Repeat('.', width).ToArray();
         }
 
-        Lagoon = new Grid<char>(lagoon);
+        Grid<char> gridLagoon = new Grid<char>(lagoon);
         Position current = origin;
 
-        foreach (var i in DigPlan)
+        foreach (var i in digPlan)
         {
-            Lagoon[current] = '#';
-            for(int m = 0; m < i.Distance; m++)
+            gridLagoon[current] = '#';
+            for (int m = 0; m < i.Distance; m++)
             {
                 switch (i.Direction)
                 {
@@ -107,60 +171,40 @@ public class LavaLagoon
                         break;
                 }
 
-                Lagoon[current] = '#';
+                gridLagoon[current] = '#';
             }
         }
 
-        FillPit();
+        return gridLagoon;
     }
 
-    public long CountPitArea()
-    {
-        long area = 0;
-
-        for(int x = 0; x < Lagoon.Width; x++)
-        {
-            for(int y = 0; y < Lagoon.Height; y++)
-            {
-                if (Lagoon[y][x] == '#') area++;
-            }
-        }
-
-        return area;
-    }
-
-    private void BuildPit()
-    {
-
-    }
-
-    private void FillPit()
+    private void FillPit(Grid<char> lagoon)
     {
         Queue<Position> pit = new Queue<Position>();
         HashSet<Position> set = new HashSet<Position>();
 
-        Position firstContained = FindFirstInclosed();
+        Position firstContained = FindFirstInclosed(lagoon);
         pit.Enqueue(firstContained);
         set.Add(firstContained);
 
         while (pit.TryDequeue(out var pos))
         {
-            Lagoon[pos] = '#';
+            lagoon[pos] = '#';
 
-            if (Lagoon.Contains(pos.MoveNorth()) && Lagoon[pos.MoveNorth()] == '.' && set.Add(pos.MoveNorth())) pit.Enqueue(pos.MoveNorth());
-            if (Lagoon.Contains(pos.MoveSouth()) && Lagoon[pos.MoveSouth()] == '.' && set.Add(pos.MoveSouth())) pit.Enqueue(pos.MoveSouth());
-            if (Lagoon.Contains(pos.MoveEast())  && Lagoon[pos.MoveEast()]  == '.' && set.Add(pos.MoveEast())) pit.Enqueue(pos.MoveEast());
-            if (Lagoon.Contains(pos.MoveWest())  && Lagoon[pos.MoveWest()]  == '.' && set.Add(pos.MoveWest())) pit.Enqueue(pos.MoveWest());
+            if (lagoon.Contains(pos.MoveNorth()) && lagoon[pos.MoveNorth()] == '.' && set.Add(pos.MoveNorth())) pit.Enqueue(pos.MoveNorth());
+            if (lagoon.Contains(pos.MoveSouth()) && lagoon[pos.MoveSouth()] == '.' && set.Add(pos.MoveSouth())) pit.Enqueue(pos.MoveSouth());
+            if (lagoon.Contains(pos.MoveEast())  && lagoon[pos.MoveEast()]  == '.' && set.Add(pos.MoveEast())) pit.Enqueue(pos.MoveEast());
+            if (lagoon.Contains(pos.MoveWest())  && lagoon[pos.MoveWest()]  == '.' && set.Add(pos.MoveWest())) pit.Enqueue(pos.MoveWest());
         }
     }
 
-    private Position FindFirstInclosed()
+    private Position FindFirstInclosed(Grid<char> lagoon)
     {
-        for (int x = 0; x < Lagoon.Width; x++)
+        for (int x = 0; x < lagoon.Width; x++)
         {
-            for (int y = 0; y < Lagoon.Height; y++)
+            for (int y = 0; y < lagoon.Height; y++)
             {
-                if (Lagoon[y][x] == '.' && IsInclosed(x, y))
+                if (lagoon[y][x] == '.' && IsInclosed(lagoon, x, y))
                 {
                     return new Position(x, y);
                 }
@@ -170,13 +214,13 @@ public class LavaLagoon
         return new Position(0, 0);
     }
 
-    private bool IsInclosed(int row, int col)
+    private bool IsInclosed(Grid<char> lagoon, int row, int col)
     {
         int count = 0;
 
         for (int x = 0; x < row; x++)
         {
-            if (Lagoon[col][x] == '#') count++;
+            if (lagoon[col][x] == '#') count++;
         }
 
         return count % 2 == 1;

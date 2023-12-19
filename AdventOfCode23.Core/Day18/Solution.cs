@@ -18,6 +18,6 @@ public class Solution : ISolution
 
     public override long Part02()
     {
-        return 0;
+        return Lagoon.CountCorrectedPitArea();
     }
 }

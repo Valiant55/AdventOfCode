@@ -35,6 +35,6 @@ public class Day18Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(952408144115);
     }
 }
