@@ -75,7 +75,7 @@ public record Part
 
     public long Combinations(Part other)
     {
-        return Math.Abs(X - other.X) * Math.Abs(M - other.M) * Math.Abs(A - other.A) * Math.Abs(S - other.S);
+        return Math.Abs(X - other.X + 1) * Math.Abs(M - other.M + 1) * Math.Abs(A - other.A + 1) * Math.Abs(S - other.S + 1);
     }
 }
 
@@ -159,6 +159,7 @@ public class PartSorter
     {
         long comobs = 0;
         Queue<(Part minPart, Part maxPart, string id)> queue = new Queue<(Part, Part, string)> ();
+        List<(Part minPart, Part maxPart)> results = new();
         queue.Enqueue((new Part(1, 1, 1, 1), new Part(4000, 4000, 4000, 4000), "in"));
 
         while(queue.TryDequeue(out var item))
@@ -166,35 +167,30 @@ public class PartSorter
             if (item.id == "R") continue;
             else if (item.id == "A")
             {
+                results.Add((item.minPart, item.maxPart));
                 comobs += item.maxPart.Combinations(item.minPart);
                 continue;
             }
 
             var minPassThru = item.minPart;
             var maxPassThru = item.maxPart;
-            var passThru = true;
             var ruleSet = RulesMap[item.id];
             foreach(var rule in ruleSet.Rules)
             {
                 switch (rule.Operator)
                 {
                     case '>':
-                        queue.Enqueue((item.minPart.SetMin(rule.Category, rule.Value+1), item.maxPart, rule.Destination));
-                        minPassThru = minPassThru.SetMin(rule.Category, rule.Value);
-                        if (rule.Passes(minPassThru)) passThru = false;
+                        queue.Enqueue((minPassThru.SetMin(rule.Category, rule.Value+1), maxPassThru, rule.Destination));
+                        maxPassThru = maxPassThru.SetMax(rule.Category, rule.Value);
                         break;
                     case '<':
-                        queue.Enqueue((item.minPart, item.maxPart.SetMax(rule.Category, rule.Value-1), rule.Destination));
-                        maxPassThru = maxPassThru.SetMax(rule.Category, rule.Value);
-                        if (rule.Passes(maxPassThru)) passThru = false;
+                        queue.Enqueue((minPassThru, maxPassThru.SetMax(rule.Category, rule.Value-1), rule.Destination)); 
+                        minPassThru = minPassThru.SetMin(rule.Category, rule.Value);
                         break;
                 }
             }
 
-            if (passThru)
-            {
-                queue.Enqueue((minPassThru, maxPassThru, ruleSet.FinalDestination));
-            }
+            queue.Enqueue((minPassThru, maxPassThru, ruleSet.FinalDestination));
         }
 
         return comobs;
