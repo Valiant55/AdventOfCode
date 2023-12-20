@@ -4,18 +4,20 @@ namespace AdventOfCode23.Core.Day19;
 
 public class Solution : ISolution
 {
-    public Solution(IParser<List<string>> parser)
-    {
+    public PartSorter PartSorter { get; set; }
 
+    public Solution(IParser<PartSorter> parser)
+    {
+        PartSorter = parser.Parse(@"Day19\input.txt");
     }
 
     public override long Part01()
     {
-        return 0;
+        return PartSorter.SortParts();
     }
 
     public override long Part02()
     {
-        return 0;
+        return PartSorter.FindCombinations();
     }
 }

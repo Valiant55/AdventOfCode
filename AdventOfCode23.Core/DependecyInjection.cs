@@ -15,6 +15,7 @@ using AdventOfCode23.Core.Day15;
 using AdventOfCode23.Core.Day16;
 using AdventOfCode23.Core.Day17;
 using AdventOfCode23.Core.Day18;
+using AdventOfCode23.Core.Day19;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AdventOfCode23.Core;
@@ -94,6 +95,10 @@ public static class DependecyInjection
         /* Day18 */
         services.AddTransient<IParser<LavaLagoon>, Day18.Parser>();
         services.AddTransient<ISolution, Day18.Solution>();
+
+        /* Day18 */
+        services.AddTransient<IParser<PartSorter>, Day19.Parser>();
+        services.AddTransient<ISolution, Day19.Solution>();
 
         return services;
     }

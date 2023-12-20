@@ -13,7 +13,7 @@ public class Day19Tests
 
         var answer = solution.Part01();
 
-        answer.Should().Be(0);
+        answer.Should().Be(19114);
     }
 
     [Fact]
@@ -24,6 +24,6 @@ public class Day19Tests
 
         var answer = solution.Part02();
 
-        answer.Should().Be(0);
+        answer.Should().Be(167409079868000);
     }
 }
