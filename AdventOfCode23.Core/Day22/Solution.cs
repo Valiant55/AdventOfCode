@@ -1,15 +1,12 @@
 ﻿using AdventOfCode23.Core.Common;
-using AdventOfCode23.Core.Day22;
 
-namespace AdventOfCode23.Core.Day21;
+namespace AdventOfCode23.Core.Day22;
 
 public class Solution : ISolution
 {
-    private readonly IParser<Garden> _parser;
-
-    public Solution(IParser<Garden> parser)
+    public Solution(IParser<List<string>> parser)
     {
-        _parser = parser;
+
     }
 
     public override long Part01()

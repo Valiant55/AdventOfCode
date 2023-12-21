@@ -2,10 +2,10 @@
 
 namespace AdventOfCode23.Core.Day21;
 
-public class Parser : IParser<List<string>>
+public class Parser : IParser<Garden>
 {
-    public List<string> Parse(string inputFile)
+    public Garden Parse(string inputFile)
     {
-        return new List<string>();
+        return new Garden();
     }
 }
