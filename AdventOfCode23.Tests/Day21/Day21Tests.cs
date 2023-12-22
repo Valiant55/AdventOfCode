@@ -9,21 +9,28 @@ public class Day21Tests
     public void Part01_ReturnsExpectedValue_FromExamples()
     {
         var parser = new Parser();
-        var solution = new Solution(parser);
 
-        var answer = solution.Part01();
+        var garden = parser.Parse(@"Day21\input.txt");
+        var answer = garden.CountPlots(6);
 
-        answer.Should().Be(0);
+        answer.Should().Be(16);
     }
 
-    [Fact]
-    public void Part02_ReturnsExpectedValue_FromExamples()
+    [Theory]
+    [InlineData(6,    16)]
+    [InlineData(10,   50)]
+    [InlineData(50,   1594)]
+    [InlineData(100,  6536)]
+    [InlineData(500,  167004)]
+    [InlineData(1000, 668697)]
+    [InlineData(5000, 16733044)]
+    public void Part02_ReturnsExpectedValue_FromExamples(int steps, int result)
     {
         var parser = new Parser();
-        var solution = new Solution(parser);
 
-        var answer = solution.Part02();
+        var garden = parser.Parse(@"Day21\input.txt");
+        var answer = garden.CountPlots(steps);
 
-        answer.Should().Be(0);
+        answer.Should().Be(result);
     }
 }

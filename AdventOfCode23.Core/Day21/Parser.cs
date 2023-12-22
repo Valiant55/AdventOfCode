@@ -6,6 +6,6 @@ public class Parser : IParser<Garden>
 {
     public Garden Parse(string inputFile)
     {
-        return new Garden();
+        return new Garden(File.ReadAllLines(inputFile).ToList());
     }
 }
