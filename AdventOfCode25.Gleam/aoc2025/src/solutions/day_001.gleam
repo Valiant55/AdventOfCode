@@ -27,10 +27,7 @@ pub fn first(inputs: List(String)) -> Int {
 }
 
 pub fn rotate(start: Int, rotation: Rotation) -> Int {
-  let new_position = case rotation.direction {
-    Left -> start - rotation.magnitude
-    Right -> start + rotation.magnitude
-  }
+  let new_position = position(start, rotation)
 
   case new_position % 100 {
     pos if pos < 0 -> 100 + pos
@@ -39,11 +36,17 @@ pub fn rotate(start: Int, rotation: Rotation) -> Int {
   }
 }
 
+fn position(start: Int, rotation: Rotation) -> Int {
+  case rotation.direction {
+    Left -> start - rotation.magnitude
+    Right -> start + rotation.magnitude
+  }
+}
+
 pub fn second(inputs: List(String)) -> Int {
   inputs
   |> list.map(create_rotation)
   |> list.scan(RotationResult(0, 50), rotate_clicks)
-  |> echo
   |> list.last()
   |> result.unwrap(RotationResult(0, 50))
   |> fn(r) { r.total_clicks }
@@ -54,11 +57,30 @@ pub fn rotate_clicks(
   rotation: Rotation,
 ) -> RotationResult {
   let new_position = rotate(start.position, rotation)
+  let raw_position = position(start.position, rotation)
 
-  let clicks = 0
+  let clicks =
+    0
+    |> offset_rots(rotation.direction, raw_position, start.position)
+    |> count_rots(raw_position)
 
-  let result = RotationResult(start.total_clicks + clicks, new_position)
-  result
+  RotationResult(start.total_clicks + clicks, new_position)
+}
+
+fn offset_rots(
+  clicks: Int,
+  direction: Direction,
+  raw_position: Int,
+  start: Int,
+) -> Int {
+  case raw_position, direction {
+    pos, Left if pos <= 0 && start != 0 -> clicks + 1
+    _, _ -> clicks
+  }
+}
+
+fn count_rots(clicks: Int, raw_position: Int) -> Int {
+  clicks + int.absolute_value(raw_position) / 100
 }
 
 fn create_rotation(line: String) -> Rotation {
