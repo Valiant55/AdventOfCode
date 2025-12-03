@@ -1,15 +1,16 @@
 import files/read
 import gleam/int
 import gleam/io
-import solutions/day_001
+import solutions/day_002
 
 pub fn main() -> Nil {
   let input =
     read.read_file(
-      "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_001.txt",
+      "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_002.txt",
+      ",",
     )
 
-  let answer = day_001.second(input)
+  let answer = day_002.first(input)
 
   io.print("The answer is: " <> int.to_string(answer))
 

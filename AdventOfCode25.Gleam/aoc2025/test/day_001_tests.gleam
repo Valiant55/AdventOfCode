@@ -5,6 +5,7 @@ pub fn example_test() {
   let input =
     read.read_file(
       "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_001_example.txt",
+      "\r\n",
     )
 
   let first = day_001.first(input)
@@ -18,6 +19,7 @@ pub fn example2_test() {
   let input =
     read.read_file(
       "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_001_example2.txt",
+      "\r\n",
     )
 
   let first = day_001.first(input)
