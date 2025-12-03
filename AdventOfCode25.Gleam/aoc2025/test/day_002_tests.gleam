@@ -9,7 +9,7 @@ pub fn part01_example_test() {
     )
 
   let first = day_002.first(input)
-  let second = day_002.first(input)
+  let second = day_002.second(input)
 
   assert first == 1_227_775_554
   assert second == 4_174_379_265
