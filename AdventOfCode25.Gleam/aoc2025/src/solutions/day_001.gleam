@@ -15,62 +15,7 @@ pub type Rotation {
 }
 
 pub type RotationResult {
-  RotationResult(total_clicks: Int, new_position: Int)
-}
-
-pub fn rotate(start: Int, rotation: Rotation) -> Int {
-  let new_position = case rotation.direction {
-    Left -> start - rotation.magnitude
-    Right -> start + rotation.magnitude
-  }
-
-  let result = case new_position % 100 {
-    pos if pos < 0 -> 100 + pos
-    pos if pos > 0 -> pos
-    _ -> 0
-  }
-
-  result
-}
-
-pub fn rotate_clicks(
-  start: RotationResult,
-  rotation: Rotation,
-) -> RotationResult {
-  let rotation_result = case rotation.direction {
-    Left -> start.new_position - rotation.magnitude
-    Right -> start.new_position + rotation.magnitude
-  }
-
-  let new_position = case rotation_result % 100 {
-    pos if pos < 0 -> 100 + pos
-    pos if pos > 0 -> pos
-    _ -> 0
-  }
-
-  //echo rotation_result
-
-  let clicks =
-    rotation.magnitude
-    |> int.divide(100)
-    |> result.unwrap(0)
-    |> int.absolute_value
-    |> count_position_zero(start.new_position, new_position)
-
-  let result = RotationResult(start.total_clicks + clicks, new_position)
-  echo result
-  result
-}
-
-pub fn count_position_zero(
-  clicks: Int,
-  start_position: Int,
-  new_position: Int,
-) -> Int {
-  case start_position, new_position {
-    start, end if start != 0 && end == 0 -> clicks + 1
-    _, _ -> clicks
-  }
+  RotationResult(total_clicks: Int, position: Int)
 }
 
 pub fn first(inputs: List(String)) -> Int {
@@ -81,13 +26,39 @@ pub fn first(inputs: List(String)) -> Int {
   |> list.length()
 }
 
+pub fn rotate(start: Int, rotation: Rotation) -> Int {
+  let new_position = case rotation.direction {
+    Left -> start - rotation.magnitude
+    Right -> start + rotation.magnitude
+  }
+
+  case new_position % 100 {
+    pos if pos < 0 -> 100 + pos
+    pos if pos > 0 -> pos
+    _ -> 0
+  }
+}
+
 pub fn second(inputs: List(String)) -> Int {
   inputs
   |> list.map(create_rotation)
   |> list.scan(RotationResult(0, 50), rotate_clicks)
+  |> echo
   |> list.last()
   |> result.unwrap(RotationResult(0, 50))
   |> fn(r) { r.total_clicks }
+}
+
+pub fn rotate_clicks(
+  start: RotationResult,
+  rotation: Rotation,
+) -> RotationResult {
+  let new_position = rotate(start.position, rotation)
+
+  let clicks = 0
+
+  let result = RotationResult(start.total_clicks + clicks, new_position)
+  result
 }
 
 fn create_rotation(line: String) -> Rotation {

@@ -6,7 +6,7 @@ import solutions/day_001
 pub fn main() -> Nil {
   let input =
     read.read_file(
-      "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_001.txt",
+      "C:\\Users\\Matt\\Documents\\VS Code\\AdventOfCode\\AdventOfCode25.Gleam\\aoc2025\\src\\inputs\\day_001_example.txt",
     )
 
   let answer = day_001.second(input)
