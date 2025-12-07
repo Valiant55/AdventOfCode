@@ -16,7 +16,6 @@ pub fn second(input: List(String)) -> Int {
   |> list.map(split_range)
   |> list.map(invalid_ids(_, has_repeating_str))
   |> list.flatten
-  |> echo
   |> list.fold(0, fn(a, i) { a + i })
 }
 
