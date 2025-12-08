@@ -10,7 +10,7 @@ pub fn main() -> Nil {
       "\r\n",
     )
 
-  let answer = day_003.first(input)
+  let answer = day_003.second(input)
 
   io.print("The answer is: " <> int.to_string(answer))
 
